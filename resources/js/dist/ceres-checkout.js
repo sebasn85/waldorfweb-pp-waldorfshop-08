@@ -7232,7 +7232,7 @@ var render = function render() {
     attrs: {
       href: _vm.getCategoryUrl(_vm.dataContainer1.parent.url)
     }
-  }, [_c("strong", [_vm._v(_vm._s(_vm.$translate("Waldorfshop7::Template.AllFromCategory")))])]), _vm._v(" "), _vm._m(1)]) : _vm._e(), _vm._v(" "), _vm._l(_vm.dataContainer1.categories, function (category, index) {
+  }, [_c("strong", [_vm._v(_vm._s(_vm.$translate("Waldorfshop8::Template.AllFromCategory")))])]), _vm._v(" "), _vm._m(1)]) : _vm._e(), _vm._v(" "), _vm._l(_vm.dataContainer1.categories, function (category, index) {
     return _c("li", {
       staticClass: "ddown",
       class: _vm.dataContainer1.parent && _vm.dataContainer1.parent.url ? "bg-secondary" : "bg-color-" + index % 10
@@ -7378,7 +7378,7 @@ var render = function render() {
     attrs: {
       href: _vm.getCategoryUrl(_vm.dataContainer2.parent.url)
     }
-  }, [_c("strong", [_vm._v(_vm._s(_vm.$translate("Waldorfshop7::Template.AllFromCategory")))])]), _vm._v(" "), _vm._m(3)]) : _vm._e(), _vm._v(" "), _vm._l(_vm.dataContainer2.categories, function (category, index) {
+  }, [_c("strong", [_vm._v(_vm._s(_vm.$translate("Waldorfshop8::Template.AllFromCategory")))])]), _vm._v(" "), _vm._m(3)]) : _vm._e(), _vm._v(" "), _vm._l(_vm.dataContainer2.categories, function (category, index) {
     return _c("li", {
       staticClass: "ddown",
       class: _vm.dataContainer2.parent && _vm.dataContainer2.parent.url ? "bg-secondary" : "bg-color-" + index % 10
@@ -75549,7 +75549,7 @@ handlePrototype(DOMTokenListPrototype, 'DOMTokenList');
 /******/ 	/* webpack/runtime/load script */
 /******/ 	!function() {
 /******/ 		var inProgress = {};
-/******/ 		var dataWebpackPrefix = "Waldorfshop7:";
+/******/ 		var dataWebpackPrefix = "Waldorfshop8:";
 /******/ 		// loadScript function to load a script via script tag
 /******/ 		__webpack_require__.l = function(url, done, key, chunkId) {
 /******/ 			if(inProgress[url]) { inProgress[url].push(done); return; }
@@ -75749,7 +75749,7 @@ handlePrototype(DOMTokenListPrototype, 'DOMTokenList');
 /******/ 		
 /******/ 		}
 /******/ 		
-/******/ 		var chunkLoadingGlobal = self["webpackChunkWaldorfshop7"] = self["webpackChunkWaldorfshop7"] || [];
+/******/ 		var chunkLoadingGlobal = self["webpackChunkWaldorfshop8"] = self["webpackChunkWaldorfshop8"] || [];
 /******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
 /******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
 /******/ 	}();

@@ -33,16 +33,16 @@
     {% set minSuffix = '' %}
 {% endif %}
 
-{% set defaultCSS = plugin_path("Waldorfshop7") ~ "/css/dia/" ~ assetName ~ minSuffix ~ ".css?v=" ~ buildHash %}
-{% set defaultSCSS = plugin_path("Waldorfshop7") ~ "/css/dia/" ~ assetName ~ ".scss?v=" ~ buildHash %}
+{% set defaultCSS = plugin_path("Waldorfshop8") ~ "/css/dia/" ~ assetName ~ minSuffix ~ ".css?v=" ~ buildHash %}
+{% set defaultSCSS = plugin_path("Waldorfshop8") ~ "/css/dia/" ~ assetName ~ ".scss?v=" ~ buildHash %}
 
 <link rel="preload" as="style" href="{{ defaultCSS }}">
 {% if LayoutContainer.show("Ceres::Template.StyleOverwrite") | trim is empty %}
-    <link rel="stylesheet" href="{{ defaultCSS }}"{% if isShopBuilder %} data-sass-root="{{ plugin_path('Waldorfshop7') }}" data-sass-original="{{ defaultSCSS }}"{% endif %}>
+    <link rel="stylesheet" href="{{ defaultCSS }}"{% if isShopBuilder %} data-sass-root="{{ plugin_path('Waldorfshop8') }}" data-sass-original="{{ defaultSCSS }}"{% endif %}>
 {% endif %}
 
 {% if isShopBuilder %}
-    <link rel="stylesheet" href="{{ plugin_path("Waldorfshop7") }}/css/dia/ceres-shopbuilder.css?v={{ buildHash }}">
+    <link rel="stylesheet" href="{{ plugin_path("Waldorfshop8") }}/css/dia/ceres-shopbuilder.css?v={{ buildHash }}">
 {% endif %}
 
 <link rel="preload" as="image" href="{{ ceresConfig.header.companyLogo }}">
@@ -53,9 +53,9 @@
 {{ LayoutContainer.show("Ceres::Template.Style") }}
 
 {% if services.template.isItem() == "1"%}
-    <link rel="stylesheet" href="{{ plugin_path('Waldorfshop7') }}/css/dia/photoswipe.css">
+    <link rel="stylesheet" href="{{ plugin_path('Waldorfshop8') }}/css/dia/photoswipe.css">
 {% endif %}
 
 {{ get_shop_builder_styles() }}
 
-<link rel="stylesheet" href="{{ plugin_path('Waldorfshop7') }}/css/waldorf-guarantees.css?v={{ buildHash }}">
+<link rel="stylesheet" href="{{ plugin_path('Waldorfshop8') }}/css/waldorf-guarantees.css?v={{ buildHash }}">

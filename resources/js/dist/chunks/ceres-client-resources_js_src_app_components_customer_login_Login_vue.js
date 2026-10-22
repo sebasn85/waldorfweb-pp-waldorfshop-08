@@ -1,5 +1,5 @@
 "use strict";
-(self["webpackChunkWaldorfshop7"] = self["webpackChunkWaldorfshop7"] || []).push([["resources_js_src_app_components_customer_login_Login_vue"],{
+(self["webpackChunkWaldorfshop8"] = self["webpackChunkWaldorfshop8"] || []).push([["resources_js_src_app_components_customer_login_Login_vue"],{
 
 /***/ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/src/app/components/customer/login/Login.vue?vue&type=script&lang=js":
 /*!**********************************************************************************************************************************************************************************************!*\
@@ -283,7 +283,7 @@ var render = function render() {
     }
   })], 1)], 2)])]), _vm._v(" "), _vm.modalElement ? _c("div", {
     staticClass: "w-100 text-center"
-  }, [_c("hr"), _vm._v(" "), _c("div", [_vm._v(_vm._s(_vm.$translate("Waldorfshop7::Template.noAccountYet")))]), _vm._v(" "), _c("a", {
+  }, [_c("hr"), _vm._v(" "), _c("div", [_vm._v(_vm._s(_vm.$translate("Waldorfshop8::Template.noAccountYet")))]), _vm._v(" "), _c("a", {
     staticClass: "btn btn-outline-primary",
     attrs: {
       href: _vm.urlRegistration

@@ -38,6 +38,7 @@
     {% if isItem %}
         {{ LayoutContainer.show("Ceres::SingleItem.Styles") }}
     {% endif %} 
+    <link rel="stylesheet" href="{{ plugin_path('Waldorfshop8') }}/css/waldorf-guarantees.css?v={{ buildHash }}">
 </head>
 
 {% set listCategoryList = config('Waldorfshop7.config.ListCategory') | replace({' ': ''}) | split(',') %}
@@ -216,7 +217,7 @@
         "bundlePrefix": "{{ services.order.getOrderItemPrefix(2) }}",
         "bundleComponentPrefix": "{{ services.order.getOrderItemPrefix(3) }}",
         "initialPleaseSelect": {{ webstoreConfig.attributeSelectDefaultOption | default(0) }},
-        "publicPath": "{{ plugin_path('Waldorfshop7') ~ '/js/dist/' }}",
+        "publicPath": "{{ plugin_path('Waldorfshop8') ~ '/js/dist/' }}",
         "isCheapestSorting": "{{ services.template.isCheapestSorting() }}",
         "useVariationOrderProperties": {% if webstoreConfig.useVariationOrderProperties | default(0) %}true{% else %}false{% endif %},
         "initialData": {
@@ -246,6 +247,7 @@
 
 {{ Translations.add( "Ceres", "Template" ) }}
 {{ Translations.add( "Waldorfshop7", "Template") }}
+{{ Translations.add( "Waldorfshop8", "Template") }}
 
 {{ get_json_data() }}
 
@@ -254,26 +256,26 @@
     {% set minSuffix = '' %}
 {% endif %}
 
-<!-- SSR:entry({{ ssr_entry('Waldorfshop7', 'resources/js/dist/ceres-server' ~ minSuffix ~ '.js') }}) -->
+<!-- SSR:entry({{ ssr_entry('Waldorfshop8', 'resources/js/dist/ceres-server' ~ minSuffix ~ '.js') }}) -->
 <!-- SSR:on() -->
-<script src="{{ plugin_path('Waldorfshop7') }}/js/dist/ceres-client{{ minSuffix }}.js?v={{ buildHash }}"></script>
+<script src="{{ plugin_path('Waldorfshop8') }}/js/dist/ceres-client{{ minSuffix }}.js?v={{ buildHash }}"></script>
 <!-- /SSR -->
 <!-- SSR:off() -->
-<script src="{{ plugin_path('Waldorfshop7') }}/js/dist/{{ assetName }}{{ minSuffix }}.js?v={{ buildHash }}"></script>
+<script src="{{ plugin_path('Waldorfshop8') }}/js/dist/{{ assetName }}{{ minSuffix }}.js?v={{ buildHash }}"></script>
 <!-- /SSR -->
 
-{#<script src="{{ plugin_path('Waldorfshop7') }}/js/dist/wd_custom.js"></script>#}
+{#<script src="{{ plugin_path('Waldorfshop8') }}/js/dist/wd_custom.js"></script>#}
 {#{% if assetName == 'ceres-checkout' %}#}
 {#    <script async src="https://cdn.novalnet.de/js/v2/NovalnetUtility.min.js"></script>#}
 {#{% endif %}#}
 
 {% if isItem %} 
    <script type="module">
-        import PhotoSwipeLightbox from '{{ plugin_path('Waldorfshop7') }}/js/dist/photoswipe-lightbox.esm.js';
+        import PhotoSwipeLightbox from '{{ plugin_path('Waldorfshop8') }}/js/dist/photoswipe-lightbox.esm.js';
         const lightbox = new PhotoSwipeLightbox({
         gallery: '#itemgallery',
         children: 'a',
-        pswpModule: () => import('{{ plugin_path('Waldorfshop7') }}/js/dist/photoswipe.esm.js')
+        pswpModule: () => import('{{ plugin_path('Waldorfshop8') }}/js/dist/photoswipe.esm.js')
         });
         lightbox.init();
     </script>

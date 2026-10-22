@@ -1,6 +1,6 @@
 <?php
 
-namespace Waldorfshop7\Middlewares;
+namespace Waldorfshop8\Middlewares;
 
 use IO\Api\Resources\CategoryTreeResource;
 use IO\Services\CategoryService;
@@ -8,8 +8,8 @@ use Plenty\Plugin\Application;
 use Plenty\Plugin\Http\Request;
 use Plenty\Plugin\Http\Response;
 use Plenty\Plugin\Middleware;
-use Waldorfshop7\Api\Resources\ThemeTreeResource;
-use Waldorfshop7\Services\ThemeCategoryService;
+use Waldorfshop8\Api\Resources\ThemeTreeResource;
+use Waldorfshop8\Services\ThemeCategoryService;
 
 class ThemeMiddleware extends Middleware
 {

@@ -1,4 +1,4 @@
-(self["webpackChunkWaldorfshop7"] = self["webpackChunkWaldorfshop7"] || []).push([["resources_js_src_app_components_item_ItemDataTable_vue"],{
+(self["webpackChunkWaldorfshop8"] = self["webpackChunkWaldorfshop8"] || []).push([["resources_js_src_app_components_item_ItemDataTable_vue"],{
 
 /***/ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/src/app/components/item/ItemDataTable.vue?vue&type=script&lang=js":
 /*!********************************************************************************************************************************************************************************************!*\

@@ -1,10 +1,10 @@
 {
-    "name": "Waldorfshop7",
+    "name": "Waldorfshop8",
     "license": "AGPL-3.0",
     "version": "5.0.75",
     "repository": {
         "type": "git",
-        "url": "https://github.com/waldorfweb/pp-waldorfshop-07.git"
+        "url": "https://github.com/sebasn85/waldorfweb-pp-waldorfshop-08.git"
     },
     "engines": {
         "node": "14"

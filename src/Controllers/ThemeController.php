@@ -1,6 +1,6 @@
 <?php
 
-namespace Waldorfshop7\Controllers;
+namespace Waldorfshop8\Controllers;
 
 use IO\Controllers\LayoutController;
 use Plenty\Modules\Category\Models\Category;

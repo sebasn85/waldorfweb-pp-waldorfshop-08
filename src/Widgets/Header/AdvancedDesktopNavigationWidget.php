@@ -1,6 +1,6 @@
 <?php
 
-namespace Waldorfshop7\Widgets\Header;
+namespace Waldorfshop8\Widgets\Header;
 
 use Ceres\Config\CeresConfig;
 use Ceres\Widgets\Common\ImageBoxWidget;
@@ -18,7 +18,7 @@ use Plenty\Modules\Webshop\Contracts\ContactRepositoryContract;
 class AdvancedDesktopNavigationWidget extends BaseWidget
 {
     /** @inheritDoc */
-    protected $template = 'Waldorfshop7::Widgets.Header.AdvancedDesktopNavigationWidget';
+    protected $template = 'Waldorfshop8::Widgets.Header.AdvancedDesktopNavigationWidget';
 
     /**
      * @inheritDoc
@@ -71,7 +71,7 @@ class AdvancedDesktopNavigationWidget extends BaseWidget
      */
     public function getData()
     {
-        return WidgetDataFactory::make('Waldorfshop7::AdvancedDesktopNavigationWidget')
+        return WidgetDataFactory::make('Waldorfshop8::AdvancedDesktopNavigationWidget')
             ->withLabel('Widget.navigationLabel')
             ->withPreviewImageUrl('/images/widgets/advanced-desktop-navigation.svg')
             ->withType(WidgetTypes::HEADER)

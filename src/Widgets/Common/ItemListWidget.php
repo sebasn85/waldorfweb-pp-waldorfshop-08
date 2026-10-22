@@ -1,13 +1,13 @@
 <?php
 
-namespace Waldorfshop7\Widgets\Common;
+namespace Waldorfshop8\Widgets\Common;
 
 use Ceres\Widgets\Helper\Factories\Settings\ValueListFactory;
 use Ceres\Widgets\Helper\Factories\WidgetSettingsFactory;
 
 class ItemListWidget extends \Ceres\Widgets\Common\ItemListWidget
 {
-    protected $template = "Waldorfshop7::Widgets.Common.ItemListWidget";
+    protected $template = "Waldorfshop8::Widgets.Common.ItemListWidget";
 
     public function getSettings()
     {

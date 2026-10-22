@@ -1,6 +1,6 @@
 <?php
 
-namespace Waldorfshop7\Widgets;
+namespace Waldorfshop8\Widgets;
 
 use Ceres\Widgets\Helper\BaseWidget;
 use Ceres\Widgets\Helper\Factories\Settings\ValueListFactory;
@@ -14,14 +14,14 @@ class ShowHideWidget extends BaseWidget
     /**
      * @var string
      */
-    protected $template = "Waldorfshop7::Widgets.Grid.ShowHideWidget";
+    protected $template = "Waldorfshop8::Widgets.Grid.ShowHideWidget";
 
     /**
      * @inheritDoc
      */
     public function getData(): array
     {
-        return WidgetDataFactory::make("Waldorfshop7::ShowHideWidget")
+        return WidgetDataFactory::make("Waldorfshop8::ShowHideWidget")
             ->withLabel("Widget.showHideWidgetLabel")
             ->withPreviewImageUrl("/images/widgets/background.svg")
             ->withType(WidgetTypes::STRUCTURE)
