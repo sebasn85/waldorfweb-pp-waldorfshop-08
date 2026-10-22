@@ -2,9 +2,13 @@
     <div class="basket-list-item py-3">
         <div class="basket-item component-loading with-icon d-flex">
             <div class="image-container">
-              <a :href="wishListItem | itemURL">
-                <img class="d-block mw-100 mh-100" v-if="image" :src="image" :title="wishListItem | itemName">
-              </a>
+                <a :href="wishListItem | itemURL">
+                    <lazy-img
+                        v-if="image"
+                        :image-url="image"
+                        :alt="imageAlt"
+                        picture-class="d-block mw-100 mh-100" />
+                </a>
             </div>
 
             <div class="meta-container-wrapper">
@@ -16,7 +20,7 @@
                             </a>
 
                             <div class="item-base-price small">
-                                {{ unitPrice | currency }}
+                                {{ unitPrice | currency }}&nbsp;<sup>*</sup>
                             </div>
 
                             <div class="item-small-prices text-muted small" v-if="!(wishListItem.unit.unitOfMeasurement === 'C62' && wishListItem.unit.content === 1) && wishListItem.variation.mayShowUnitPrice">
@@ -64,8 +68,8 @@
                         </div>
 
                         <div class="price-box text-right my-1 ml-2">
-                            <div class="item-total-price font-weight-bold text-nowrap">
-                                {{ quantity * unitPrice | currency }}
+                            <div class="item-total-price font-weight-bold text-nowrap d-flex align-items-center">
+                                {{ quantity * unitPrice | currency }}&nbsp;<sup>*</sup>
                             </div>
 
                             <div class="btn btn-sm text-danger p-0" @click="removeItem()" data-testing="remove-wlist-item">
@@ -148,6 +152,11 @@ export default {
             type: String,
             default: "urlPreview"
         },
+        imageNames:
+        {
+            type: String,
+            default: "names"
+        },
         itemDetailsData:
         {
             type: Array,
@@ -172,7 +181,21 @@ export default {
 
             return this.$options.filters.itemImage(itemImages);
         },
+        imageAlt()
+        {
+            const itemImages = this.$options.filters.itemImages(this.wishListItem.images, this.imageNames);
+            const imageData = this.$options.filters.itemImage(itemImages)
 
+            if (imageData.alternate !== "") {
+              return imageData.alternate;
+            }
+
+            if (imageData.name !== "") {
+              return imageData.name;
+            }
+
+            return this.wishListItem.texts.name1;
+        },
         unitPrice()
         {
             if (!isNullOrUndefined(this.wishListItem.prices.specialOffer))

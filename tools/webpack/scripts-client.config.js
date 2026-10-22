@@ -1,5 +1,5 @@
 const path = require("path");
-const VueLoaderPlugin = require("vue-loader/lib/plugin");
+const { VueLoaderPlugin } = require("vue-loader");
 const WebpackRequireFrom = require("webpack-require-from");
 
 module.exports = env =>
@@ -27,11 +27,15 @@ module.exports = env =>
                     use: [
                         {
                             loader: "expose-loader",
-                            options: "$"
+                            options: {
+                                exposes: "$"
+                            }
                         },
                         {
                             loader: "expose-loader",
-                            options: "jQuery"
+                            options: {
+                                exposes: "jQuery"
+                            }
                         }
                     ]
                 },

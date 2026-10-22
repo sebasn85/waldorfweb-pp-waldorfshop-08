@@ -7,7 +7,8 @@ const AutoFocusService = require("./services/AutoFocusService");
 import Vue from "vue";
 import { getStyle } from "./helper/dom";
 import { detectPassiveEvents } from "./helper/featureDetect";
-import HeaderScroller from "./helper/HeaderScroller";
+import { get } from "./services/ApiService";
+// import HeaderScroller from "./helper/HeaderScroller";
 
 // Frontend end scripts
 // eslint-disable-next-line
@@ -189,6 +190,27 @@ function CeresMain()
                     bubbles: true
                 }));
         });
+
+        $("#shippingscosts").on("show.bs.modal", function()
+        {
+            if (App.shippingscostsLoaded === false)
+            {
+                const modal = this;
+                const shippingCatId = App.config.global.shippingCostsCategoryId;
+
+                get("/rest/wd/categorysbc/"+shippingCatId, {}, { dataType: "html", headers: { "Accept": "text/html; charset=utf-8" } })
+                    .done(response =>
+                    {
+                        const modalBody = modal.querySelector(".modal-body");
+
+                        modalBody.innerHTML = response;
+                        new Vue({
+                            el: modalBody, data: "", store: window.ceresStore
+                        });
+                        App.shippingscostsLoaded = true;
+                    });
+            }
+        });
     });
 }
 
@@ -226,7 +248,7 @@ const showShopNotification = function(event)
 document.addEventListener("showShopNotification", showShopNotification);
 
 // fixate the header elements
-new HeaderScroller();
+// new HeaderScroller();
 
 $(document).on("shopbuilder.after.drop shopbuilder.after.widget_replace", function(event, eventData, widgetElement)
 {

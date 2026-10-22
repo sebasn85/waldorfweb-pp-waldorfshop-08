@@ -1,79 +1,160 @@
 <template>
-    <div class="mobile-navigation" :class="{ 'open': isMobileNavigationOpen }">
-        <div v-show="isNavigationInitialized">
-            <ul class="breadcrumb d-block px-3 py-0">
-                <li class="btn-close" @click="closeNavigation()"></li>
-
-                <li class="breadcrumb-item" @click="slideTo(null, true)">
-                    <i class="fa fa-home" aria-hidden="true"></i>
-                </li>
-
-                <li class="breadcrumb-item" v-for="breadcrumb in breadcrumbs" @click="slideTo(breadcrumb.parent, true)">
-                    {{ breadcrumb.name }}
-                </li>
-            </ul>
-            <ul v-menu id="menu-1" class="mainmenu w-100 p-0 m-0 menu-active">
-                <li class="ddown" v-if="dataContainer1.parent" @click="slideTo(dataContainer1.parent && dataContainer1.parent.parent || null, true)">
-                    <span class="nav-direction btn-up">
-                        <i class="fa fa-lg fa-level-up" aria-hidden="true"></i>
-                    </span>
-                </li>
-
-                <li class="ddown" v-for="category in dataContainer1.categories">
-                    <a :href="getCategoryUrl(category.url)">{{ category.details[0].name }}</a>
-                    <span class="nav-direction" v-if="category.childCount" @click="slideTo(category)">
-                        <i class="fa fa-lg fa-caret-right" aria-hidden="true"></i>
-                    </span>
-                </li>
-                <template v-if="dataContainer1.categories[0]">
-                    <li class="ddown" v-for="number in dataContainer1.categories[0].siblingCount - dataContainer1.categories.length">
-                        <span class="nav-placeholder m-3" :style="{width: (Math.random() * 20 + 60) + '%'}"></span>
+    <div class="mobile-navigation-wrapper">
+        <div class="mobile-navigation bg-white" :class="{ 'open': isMobileNavigationOpen }">
+            <div v-show="isNavigationInitialized">
+                <ul class="breadcrumb d-block p-0 m-0">
+                    <li class="px-3 bg-danger pull-right" @click="closeNavigation()" :aria-label="$translate('Ceres::Template.closeIcon')">
+                        <i class="fa fa-close" aria-hidden="true"></i>
                     </li>
-                </template>
-                <template v-else-if="dataContainer1.parent">
-                    <li class="ddown" v-for="number in dataContainer1.parent.childCount">
-                        <span class="nav-placeholder m-3" :style="{width: (Math.random() * 20 + 60) + '%'}"></span>
-                    </li>
-                </template>
-            </ul>
 
-            <ul v-menu id="menu-2" class="mainmenu w-100 p-0 m-0">
-                <li class="ddown" v-if="dataContainer2.parent" @click="slideTo(dataContainer2.parent && dataContainer2.parent.parent || null, true)">
-                    <span class="nav-direction btn-up">
-                        <i class="fa fa-lg fa-level-up" aria-hidden="true"></i>
-                    </span>
-                </li>
+                    <li class="breadcrumb-item pl-3" @click="slideTo(null, true)">
+                        <i class="fa fa-home" aria-hidden="true"></i>
+                    </li>
+                </ul>
+                <ul v-menu id="menu-1" class="mainmenu w-100 p-0 m-0 menu-active">
+                    <li class="ddown bg-secondary" v-if="dataContainer1.parent && dataContainer1.parent.details" @click="slideTo(dataContainer1.parent && dataContainer1.parent.parent || null, true)">
+                        <span class="nav-direction btn-up">
+                            <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                        </span>
+                        <a>{{ dataContainer1.parent.details[0].name }}</a>
+                    </li>
 
-                <li  class="ddown" v-for="category in dataContainer2.categories">
-                    <a :href="getCategoryUrl(category.url)">{{ category.details[0].name }}</a>
-                    <span class="nav-direction" v-if="category.childCount" @click="slideTo(category)">
-                        <i class="fa fa-lg fa-caret-right" aria-hidden="true"></i>
-                    </span>
-                </li>
-                <template v-if="dataContainer2.categories[0]">
-                    <li class="ddown" v-for="number in dataContainer2.categories[0].siblingCount - dataContainer2.categories.length">
-                        <span class="nav-placeholder m-3" :style="{width: (Math.random() * 20 + 60) + '%'}"></span>
+                    <li class="ddown bg-primary" v-if="dataContainer1.parent && dataContainer1.parent.url">
+                        <a :href="getCategoryUrl(dataContainer1.parent.url)"><strong>{{ $translate("Waldorfshop7::Template.AllFromCategory") }}</strong></a>
+                        <span class="nav-direction">
+                            <i class="fa fa-lg fa-chevron-circle-right" aria-hidden="true"></i>
+                        </span>
                     </li>
-                </template>
-                <template v-else-if="dataContainer2.parent">
-                    <li class="ddown" v-for="number in dataContainer2.parent.childCount">
-                        <span class="nav-placeholder m-3" :style="{width: (Math.random() * 20 + 60) + '%'}"></span>
+
+                    <li class="ddown" :class="dataContainer1.parent && dataContainer1.parent.url ? 'bg-secondary' : 'bg-color-'+(index % 10)" v-for="(category, index) in dataContainer1.categories">
+                        <a :href="getCategoryUrl(category.url)" @click="category.childCount ? slideTo(category, false, $event) : openCategory(category.url)">{{ category.details[0].name }}</a>
+                        <span class="nav-direction" @click="category.childCount ? slideTo(category) : openCategory(category.url)">
+                            <i class="fa" :class="category.childCount ? 'fa-chevron-right text-white' : ''" aria-hidden="true"></i>
+                        </span>
                     </li>
-                </template>
-            </ul>
+                    <template v-if="dataContainer1.categories[0]">
+                        <li class="ddown" v-for="number in dataContainer1.categories[0].siblingCount - dataContainer1.categories.length">
+                            <span class="nav-placeholder m-3" :style="{width: (Math.random() * 20 + 60) + '%'}"></span>
+                        </li>
+                    </template>
+                    <template v-else-if="dataContainer1.parent">
+                        <li class="ddown" v-for="number in dataContainer1.parent.childCount">
+                            <span class="nav-placeholder m-3" :style="{width: (Math.random() * 20 + 60) + '%'}"></span>
+                        </li>
+                    </template>
+                    <li class="ddown bg-primary">
+                      <a href="https://blog.waldorfshop.eu" class="mobile-blog">Blog</a>
+                      <span class="nav-direction text-right">
+                          <a href="https://www.facebook.com/waldorfshop" class="py-0 px-1" title="Facebook" target="_blank">
+                            <lazy-img image-url="https://cdn02.plentymarkets.com/rm2ukznxe8l9/frontend/Layout/icons2023/ws_icon_facebook_header.webp" ></lazy-img>
+                          </a>
+                          <a href="https://www.instagram.com/waldorfshop.eu" class="py-0 px-1" title="Instagram" target="_blank">
+                            <lazy-img image-url="https://cdn02.plentymarkets.com/rm2ukznxe8l9/frontend/Layout/icons2023/ws_icon_insta_header.webp"></lazy-img>
+                          </a>
+                          <a href="https://www.youtube.com/channel/UCt-FjyLXUCN_WPVhaJHSD7A" class="py-0 px-1" title="YouTube" target="_blank">
+                            <lazy-img image-url="https://cdn02.plentymarkets.com/rm2ukznxe8l9/frontend/Layout/icons2023/ws_icon_youtube_header.webp"></lazy-img>
+                          </a>
+                        </span>
+                    </li>
+                    <client-only>
+                      <li class="ddown">
+                        <div v-if="hrefLangLinks.length > 0" class="m-3">
+                          <strong class="mb-1 d-block">{{ $translate("Ceres::Template.headerSelectLanguage") }}</strong>
+                          <a :href="hreflang.href" class="badge text-uppercase p-2" :class="{'badge-primary': isSameLanguage(hreflang.hreflang), 'text-secondary': !isSameLanguage(hreflang.hreflang)}" v-for="hreflang in hrefLangLinks">{{ hreflang.hreflang }}</a>
+                        </div>
+                        <span class="nav-direction">
+                            <user-login-handler
+                              :show-login="true"
+                              :show-registration="false">
+                                <a class="nav-link" data-toggle="modal" :aria-label="$translate('Ceres::Template.login')">
+                                    <img class="mx-auto d-block" src="https://cdn02.plentymarkets.com/rm2ukznxe8l9/frontend/Layout/icons2023/ws_icon_login.svg">
+                                    <span class="d-none d-sm-block">{{ $translate("Ceres::Template.login") }}</span>
+                                </a>
+                            </user-login-handler>
+                          </span>
+                      </li>
+                    </client-only>
+                </ul>
+
+                <ul v-menu id="menu-2" class="mainmenu w-100 p-0 m-0">
+                    <li class="ddown bg-secondary" v-if="dataContainer2.parent && dataContainer2.parent.details" @click="slideTo(dataContainer2.parent && dataContainer2.parent.parent || null, true)">
+                        <span class="nav-direction btn-up">
+                            <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                        </span>
+                        <a>{{ dataContainer2.parent.details[0].name }}</a>
+                    </li>
+
+                    <li class="ddown bg-primary" v-if="dataContainer2.parent && dataContainer2.parent.url">
+                        <a :href="getCategoryUrl(dataContainer2.parent.url)"><strong>{{ $translate("Waldorfshop7::Template.AllFromCategory") }}</strong></a>
+                        <span class="nav-direction">
+                            <i class="fa fa-lg fa-chevron-circle-right" aria-hidden="true"></i>
+                        </span>
+                    </li>
+
+                    <li class="ddown" :class="dataContainer2.parent && dataContainer2.parent.url ? 'bg-secondary' : 'bg-color-'+(index % 10)" v-for="(category, index) in dataContainer2.categories">
+                        <a :href="getCategoryUrl(category.url)" @click="category.childCount ? slideTo(category, false, $event) : openCategory(category.url)">{{ category.details[0].name }}</a>
+                        <span class="nav-direction" v-if="category.childCount" @click="slideTo(category)">
+                            <i class="fa" :class="category.childCount ? 'fa-chevron-right text-white' : ''" aria-hidden="true"></i>
+                        </span>
+                    </li>
+                    <template v-if="dataContainer2.categories[0]">
+                        <li class="ddown" v-for="number in dataContainer2.categories[0].siblingCount - dataContainer2.categories.length">
+                            <span class="nav-placeholder m-3" :style="{width: (Math.random() * 20 + 60) + '%'}"></span>
+                        </li>
+                    </template>
+                    <template v-else-if="dataContainer2.parent">
+                        <li class="ddown" v-for="number in dataContainer2.parent.childCount">
+                            <span class="nav-placeholder m-3" :style="{width: (Math.random() * 20 + 60) + '%'}"></span>
+                        </li>
+                    </template>
+                    <li class="ddown bg-primary">
+                        <a href="https://blog.waldorfshop.eu" class="mobile-blog">Blog</a>
+                      <span class="nav-direction text-right">
+                          <a href="https://www.facebook.com/waldorfshop" class="py-0 px-1" title="Facebook" target="_blank">
+                            <lazy-img image-url="https://cdn02.plentymarkets.com/rm2ukznxe8l9/frontend/Layout/icons2023/ws_icon_facebook_header.webp" ></lazy-img>
+                          </a>
+                          <a href="https://www.instagram.com/waldorfshop.eu" class="py-0 px-1" title="Instagram" target="_blank">
+                            <lazy-img image-url="https://cdn02.plentymarkets.com/rm2ukznxe8l9/frontend/Layout/icons2023/ws_icon_insta_header.webp"></lazy-img>
+                          </a>
+                          <a href="https://www.youtube.com/channel/UCt-FjyLXUCN_WPVhaJHSD7A" class="py-0 px-1" title="YouTube" target="_blank">
+                            <lazy-img image-url="https://cdn02.plentymarkets.com/rm2ukznxe8l9/frontend/Layout/icons2023/ws_icon_youtube_header.webp"></lazy-img>
+                          </a>
+                        </span>
+                    </li>
+                    <client-only>
+                      <li class="ddown">
+                          <div v-if="hrefLangLinks.length > 0" class="m-3">
+                            <strong class="mb-1 d-block">{{ $translate("Ceres::Template.headerSelectLanguage") }}</strong>
+                            <a :href="hreflang.href" class="badge text-uppercase p-2" :class="{'badge-primary': isSameLanguage(hreflang.hreflang), 'text-secondary': !isSameLanguage(hreflang.hreflang)}" v-for="hreflang in hrefLangLinks">{{ hreflang.hreflang }}</a>
+                          </div>
+                        <span class="nav-direction">
+                          <user-login-handler
+                            :show-login="true"
+                            :show-registration="false">
+                              <a class="nav-link" data-toggle="modal" :aria-label="$translate('Ceres::Template.login')">
+                                  <img class="mx-auto d-block" src="https://cdn02.plentymarkets.com/rm2ukznxe8l9/frontend/Layout/icons2023/ws_icon_login.svg">
+                                  <span class="d-none d-sm-block">{{ $translate("Ceres::Template.login") }}</span>
+                              </a>
+                          </user-login-handler>
+                        </span>
+                      </li>
+                    </client-only>
+                </ul>
+            </div>
+
+            <template v-if="!isNavigationInitialized">
+                <ul class="breadcrumb">
+                    <li class="btn-close" @click="closeNavigation()"></li>
+
+                    <li class="breadcrumb-item">
+                        <i class="fa fa-home" aria-hidden="true"></i>
+                    </li>
+                </ul>
+
+                <loading-animation></loading-animation>
+            </template>
         </div>
-
-        <template v-if="!isNavigationInitialized">
-            <ul class="breadcrumb">
-                <li class="btn-close" @click="closeNavigation()"></li>
-
-                <li class="breadcrumb-item">
-                    <i class="fa fa-home" aria-hidden="true"></i>
-                </li>
-            </ul>
-
-            <loading-animation></loading-animation>
-        </template>
+        <div class="mobile-navigation-overlay" @click="closeNavigation()"></div>
     </div>
 </template>
 
@@ -111,7 +192,8 @@ export default {
             },
             useFirstContainer: false,
             isNavigationInitialized: false,
-            selectedCategory: null
+            selectedCategory: null,
+            hrefLangLinks: []
         };
     },
 
@@ -150,6 +232,7 @@ export default {
     mounted()
     {
         this.addEventListener();
+        this.getLanguageUrls();
     },
 
     methods:
@@ -169,11 +252,11 @@ export default {
 
         loadInitialTree()
         {
-            if (this.navigationTree.length <= 0)
+            if (!this.isNavigationInitialized)
             {
                 const categoryId = this.initialCategory && this.initialCategory.id ? this.initialCategory.id : null;
 
-                this.$store.dispatch("loadPartialNavigationTree", categoryId)
+                this.$store.dispatch("loadPartialNavigationTree", { categoryId: categoryId })
                     .then(response =>
                     {
                         this.$store.commit("setNavigationTree", response);
@@ -217,8 +300,12 @@ export default {
             }
         },
 
-        slideTo(category, back)
+        slideTo(category, back, event)
         {
+            if (event) {
+                event.preventDefault();
+            }
+
             const children = isDefined(category) ? category.children : this.navigationTree;
             const categoryId = isDefined(category) ? category.id : null;
 
@@ -251,7 +338,7 @@ export default {
             if (this.selectedCategory != categoryId ||
                 (isDefined(this.selectedCategory) && this.selectedCategory.id !== categoryId))
             {
-                this.$store.dispatch("loadPartialNavigationTree", categoryId)
+                this.$store.dispatch("loadPartialNavigationTree", { categoryId: categoryId })
                     .then(response =>
                     {
                         if ((isNullOrUndefined(this.selectedCategory) && isNullOrUndefined(categoryId)) ||
@@ -318,6 +405,27 @@ export default {
             const prefix = this.includeLanguage ? `/${App.language}${trailingSlash}` : "";
 
             return prefix + url;
+        },
+
+        openCategory(url)
+        {
+            window.location.href = this.getCategoryUrl(url);
+        },
+
+        getLanguageUrls()
+        {
+            this.hrefLangLinks = [];
+            const hrefLangDefinitions = $('[hreflang]');
+            for (const hreflang of hrefLangDefinitions) {
+                if (hreflang.hreflang !== 'x-default') {
+                    this.hrefLangLinks.push({hreflang: hreflang.hreflang, href: hreflang.href});
+                }
+            }
+        },
+
+        isSameLanguage(language)
+        {
+            return language === App.language;
         }
     },
 

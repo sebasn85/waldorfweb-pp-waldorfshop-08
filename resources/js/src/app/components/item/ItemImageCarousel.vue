@@ -1,42 +1,85 @@
 <template>
-    <div itemscope itemtype="http://schema.org/Thing">
-        <template>
-            <div class="single-carousel owl-carousel owl-theme owl-single-item mt-0" ref="single">
-                <div v-for="image in singleImages" class="prop-1-1">
-                    <a :href="image.url" :data-lightbox="'single-item-image' + _uid">
-                        <img class="owl-lazy" :data-src="image.url" :alt="getAltText(image)" :title="getImageName(image)">
+    <div itemscope itemtype="http://schema.org/Thing" v-if="showGallery()" class="text-center" :id="'carousel-wrapper'+id">
+        <div :id="'carousel'+id" class="carousel slide" data-interval="false">
+            <ol class="carousel-indicators" v-if="showDots">
+                <li v-for="(image, index) in singleImages" :data-target="'#carousel'+id" :data-slide-to="index" :class="{ active: index === 0 }"></li>
+            </ol>
+            <div class="carousel-inner text-center pswp-gallery" id="itemgallery" >
+                <div v-for="(image, index) in singleImages" class="carousel-item prop-1-1" :class="{ active: index === 0 }">
+                    <a  class=" position-absolute w-100 h-100" 
+                        :class="{ active: index === 0 }" 
+                        :href="image.url + '.avif'"
+                        :data-pswp-width="image.width"
+                        :data-pswp-height="image.height"
+                        target="_blank">
+                        <img
+                            v-if="index === 0"
+                            :alt="getAltText(image)"
+                            :src="image.url + '.avif'"
+                            :title="getImageName(image)"
+                            class="mw-100 mh-100"
+                            fetchpriority="high"
+                            :width="image.width"
+                            :height="image.height">
+                        <img
+                            v-else
+                            :alt="getAltText(image)"
+                            :src="image.url + '.avif'"
+                            :title="getImageName(image)"
+                            class="mw-100 mh-100"
+                            loading="lazy"
+                            decoding="async"
+                            :width="image.width"
+                            :height="image.height">
+                        
                     </a>
                 </div>
             </div>
-            <div v-if="showThumbs" id="thumb-carousel" class="owl-thumbs owl-carousel owl-theme owl-single-item" ref="thumbs">
-                <div class="prop-1-1" v-for="(imagePreview, index) in carouselImages">
-                    <div class="image-container" @click="goTo(index)">
-                        <lazy-img
-                            picture-class="owl-thumb border-appearance"
-                            v-bind:class="{ 'active': currentItem === index}"
-                            :image-url="imagePreview.url"
-                            :alt="getAltText(imagePreview)"
-                            :title="getImageName(imagePreview)">
-                        </lazy-img>
-                    </div>
+            <a class="carousel-control-prev" :href="'#carousel'+id" role="button" data-slide="prev" v-if="showNav && singleImages.length > 1">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" :href="'#carousel'+id" role="button" data-slide="next" v-if="showNav && singleImages.length > 1">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+        <div v-if="showThumbs" class="carousel-thumbnails">
+            <div class="row mx-n2">
+                <div class="col col-lg-1 col-2 pt-2 px-2" v-for="(imagePreview, index) in carouselImages">
+                    <a class="d-block prop-1-1" :href="'#carousel'+id" :data-target="'#carousel'+id" :data-slide-to="index" :title="getImageName(imagePreview)">
+                        <span class="position-absolute d-block w-100 h-100 px-2">
+                            <img
+                              :alt="getAltText(imagePreview)"
+                              :src="imagePreview.url + '.avif'"
+                              :title="getImageName(imagePreview)"
+                              class="mw-100 mh-100 border"
+                              loading="lazy"
+                              decoding="async">
+                        </span>
+                    </a>
                 </div>
             </div>
-        </template>
-        <div v-if="!initialized" class="single-carousel owl-carousel owl-loaded owl-theme owl-single-item mt-0">
-            <div class="prop-1-1">
+        </div>
+    </div>
+    <div  v-else id="itemgallery" class="pswp-gallery">
+        <div class="prop-1-1">
+             <a  class=" position-absolute w-100 h-100" 
+                :href="singleImages[0].url + '.avif'"
+                :data-pswp-width="singleImages[0].width"
+                :data-pswp-height="singleImages[0].height"
+                target="_blank">
                 <img
-                    class="owl-placeholder"
-                    :src="singleImages[0].url"
-                    :alt="getAltText(singleImages[0].url)"
-                    :title="getImageName(singleImages[0].url)"
-                >
-            </div>
+                    :alt="getAltText(singleImages[0])"
+                    :src="singleImages[0].url + '.avif'"
+                    :title="getImageName(singleImages[0])"                    
+                    class="mw-100 mh-100">
+            </a>
         </div>
     </div>
 </template>
 
 <script>
-import { isNullOrUndefined } from "../../helper/utils";
 
 export default {
     name: "item-image-carousel",
@@ -62,15 +105,15 @@ export default {
             type: Boolean,
             default: true
         },
+        showNav:
+        {
+            type: Boolean,
+            default: false
+        },
         animationStyle:
         {
             type: String,
             default: "standard"
-        },
-        pluginPath:
-        {
-            type: String,
-            default: ""
         }
     },
 
@@ -83,9 +126,9 @@ export default {
     data()
     {
         return {
-            currentItem: 0,
-            initialized: false
-        };
+            imageObserver: null,
+            id: null
+        }
     },
 
     computed:
@@ -108,195 +151,53 @@ export default {
             return this.$options.filters.itemImages(
                     this.currentVariation.images,
                     this.imageUrlAccessor
-            ).slice(0, this.maxQuantity);
-        }
-    },
-
-    watch: {
-        currentVariation:
-        {
-            handler(val, oldVal)
-            {
-                if (val !== oldVal)
-                {
-                    setTimeout(() =>
-                    {
-                        this.reInitialize();
-                    }, 1);
-                }
-            },
-            deep: true
+                ).slice(0, this.maxQuantity);
         }
     },
 
     mounted()
     {
+        this.id = this._uid;
+
         this.$nextTick(() =>
         {
-            this.loadLightbox().then(() =>
-                {
-                    this.initCarousel();
-                    this.initThumbCarousel();
-                })
-                .catch(event =>
-                {
-                    console.log("error while loading lightbox", event);
-                });
+            this.initCarousel();
         });
     },
 
     methods:
     {
+        initCarousel()
+        {
+            $('#carousel' + this.id).carousel();
+        },
+
         getImageCount()
         {
             return this.carouselImages.length > this.maxQuantity ? this.maxQuantity : this.carouselImages.length;
         },
 
-        reInitialize()
-        {
-            const $owl = $(this.$refs.single);
-
-            $owl.trigger("destroy.owl.carousel");
-            $owl.html($owl.find(".owl-stage-outer").html()).removeClass("owl-loaded");
-            $owl.find(".owl-item").remove();
-
-            const $thumbs = $(this.$refs.thumbs);
-
-            $thumbs.trigger("destroy.owl.carousel");
-            $thumbs.html($thumbs.find(".owl-stage-outer").html()).removeClass("owl-loaded");
-            $thumbs.find(".owl-item").remove();
-
-            this.initCarousel();
-            this.initThumbCarousel();
-        },
-
-        initCarousel()
-        {
-            const imageCount = this.getImageCount();
-            const carouselSettings = {
-                autoHeight       : true,
-                dots             : this.showDots,
-                items            : 1,
-                lazyLoad         : true,
-                rewind           : true,
-                margin           : 10,
-                mouseDrag        : imageCount > 1,
-                nav              : imageCount > 1,
-                navClass         : [
-                    "owl-single-item-nav left carousel-control",
-                    "owl-single-item-nav right carousel-control"
-                ],
-                navContainerClass: "",
-                navText          : [
-                    "<i class=\"owl-single-item-control fa fa-chevron-left\" aria-hidden=\"true\"></i>",
-                    "<i class=\"owl-single-item-control fa fa-chevron-right\" aria-hidden=\"true\"></i>"
-                ],
-                smartSpeed       : 350,
-                onChanged: event =>
-                {
-                    const $thumb = $(this.$refs.thumbs);
-
-                    $thumb.trigger("to.owl.carousel", [
-                        event.page.index,
-                        350
-                    ]);
-                },
-                onInitialized: event =>
-                {
-                    this.initialized = true;
-                }
-            };
-
-            if (this.animationStyle !== "standard")
-            {
-                carouselSettings.animateOut = this.animationStyle;
-            }
-
-            $(this.$refs.single).owlCarousel(carouselSettings);
-
-            if (!isNullOrUndefined(window.lightbox))
-            {
-                lightbox.option({
-                    wrapAround: true,
-                    albumLabel: this.$translate("Ceres::Template.singleItemLightboxImageShown")
-                });
-            }
-
-            $(this.$refs.single).on("changed.owl.carousel", event =>
-            {
-                this.currentItem = event.page.index;
-            });
-        },
-
-        initThumbCarousel()
-        {
-            $(this.$refs.thumbs).owlCarousel({
-                autoHeight       : true,
-                dots             : false,
-                items            : 5,
-                lazyLoad         : true,
-                loop             : false,
-                margin           : 10,
-                mouseDrag        : false,
-                center           : false,
-                nav              : true,
-                navClass         : [
-                    "owl-single-item-nav left carousel-control",
-                    "owl-single-item-nav right carousel-control"
-                ],
-                navContainerClass: "",
-                navText          : [
-                    "<i class=\"owl-single-item-control fa fa-chevron-left\" aria-hidden=\"true\"></i>",
-                    "<i class=\"owl-single-item-control fa fa-chevron-right\" aria-hidden=\"true\"></i>"
-                ],
-                smartSpeed       : 350
-            });
-        },
-
-        goTo(index)
-        {
-            const $owl = $(this.$refs.single);
-
-            $owl.trigger("to.owl.carousel", [
-                index,
-                350
-            ]);
-        },
-
         getAltText(image)
         {
-            return image && image.alternate ? image.alternate : this.$options.filters.itemName(this.currentVariation);
+            let altText = image && image.alternate ? image.alternate : this.$options.filters.itemName(this.currentVariation);
+            if (this.currentVariation.attributes.length > 0) {
+                altText = altText + ' ' + this.currentVariation.attributes[0].value.names.name
+            }
+            return altText;
         },
 
         getImageName(image)
         {
-            return image && image.name ? image.name : this.$options.filters.itemName(this.currentVariation);
+            let imageName =  image && image.name ? image.name : this.$options.filters.itemName(this.currentVariation);
+            if (this.currentVariation.attributes.length > 0) {
+                imageName = imageName + ' ' + this.currentVariation.attributes[0].value.names.name
+            }
+            return imageName;
         },
 
-        loadLightbox()
+        showGallery()
         {
-            return new Promise((resolve, reject) =>
-            {
-                const script = document.querySelector("script#lightboxscript");
-
-                if (!isNullOrUndefined(script))
-                {
-                    resolve();
-                }
-                else
-                {
-                    const script = document.createElement("script");
-
-                    script.type = "text/javascript";
-                    script.id = "lightboxscript";
-                    script.src = `${ this.pluginPath }/js/dist/lightbox.min.js`;
-
-                    script.addEventListener("load", () => resolve(), false);
-                    script.addEventListener("error", event => reject(event), false);
-
-                    document.body.appendChild(script);
-                }
-            });
+            return (this.getImageCount() > 1);
         }
     }
 }

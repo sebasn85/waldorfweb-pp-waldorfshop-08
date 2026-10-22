@@ -4,16 +4,17 @@
 
         <div class="basket-item component-loading with-icon d-flex" :class="{ 'sending is-loading': waiting, 'is-loading': isCheckoutReadonly }">
             <div class="image-container">
-              <a :href="basketItem.variation.data | itemURL">
-                <lazy-img
-                    picture-class="d-block mw-100 mh-100"
-                    v-if="image"
-                    :image-url="image"
-                    :alt="altText"
-                    :title="itemName"
-                    data-testing="basket-item-img">
-                </lazy-img>
-              </a>
+                <a :href="basketItem.variation.data | itemURL">
+                    <lazy-img
+                        v-if="image"
+                        :image-url="image"
+                        :alt="altText"
+                        :height="height"
+                        :width="width"
+                        picture-class="d-block mw-100 mh-100 h-auto"
+                        data-testing="basket-item-img"
+                    />
+                </a>
             </div>
 
             <div class="meta-container-wrapper">
@@ -93,7 +94,7 @@
                             <div class="item-total-price font-weight-bold text-nowrap">{{ basketItem.quantity * unitPrice | currency(basketItem.variation.data.prices.default.currency) }}</div>
 
                             <button
-                                class="btn btn-sm text-danger p-0"
+                                class="btn btn-sm text-danger-darker p-0"
                                 :class="{ 'disabled': waiting || isBasketLoading || isCheckoutReadonly || waitingForDelete }"
                                 @click="deleteItem"
                                 data-testing="basket-item-delete">
@@ -105,7 +106,7 @@
                 </div>
 
                 <basket-set-component-list v-if="basketItem.setComponents" :set-components="basketItem.setComponents" :set-item="basketItem"></basket-set-component-list>
-                
+
                 <order-property-value-list :basket-item="basketItem"></order-property-value-list>
 
                 <div class="small" v-if="showMoreInformation">
@@ -139,13 +140,14 @@
                     </template>
                 </div>
 
-                <label v-if="isMoreButtonVisible"
+                <div v-if="isMoreButtonVisible"
                     class="btn-collapse"
                     :class="{ 'collapsed': !showMoreInformation }"
                     @click="showMoreInformation = !showMoreInformation"
                     :data-show-more="$translate('Ceres::Template.basketShowMore')"
-                    :data-show-less="$translate('Ceres::Template.basketShowLess')">
-                </label>
+                    :data-show-less="$translate('Ceres::Template.basketShowLess')"
+                    :aria-label="$translate('Ceres::Template.basketShowMore')">
+                </div>
             </div>
         </div>
 
@@ -166,7 +168,7 @@ import OrderPropertyValueList from "../../item/OrderPropertyValueList.vue"
 
 export default {
     name: "basket-list-item",
-    
+
     components:
     {
         BasketSetComponentList,
@@ -210,6 +212,20 @@ export default {
             const itemImages = this.$options.filters.itemImages(this.basketItem.variation.data.images, "urlPreview");
 
             return this.$options.filters.itemImage(itemImages);
+        },
+
+        width()
+        {
+            const itemImages = this.$options.filters.itemImages(this.basketItem.variation.data.images, "urlPreview");
+
+            return this.$options.filters.itemImageWidth(itemImages);
+        },
+
+        height()
+        {
+          const itemImages = this.$options.filters.itemImages(this.basketItem.variation.data.images, "urlPreview");
+
+          return this.$options.filters.itemImageHeight(itemImages);
         },
 
         altText()
@@ -262,7 +278,7 @@ export default {
         basePrice()
         {
             // if the 'AfterBasketItemUpdate' event contains a new base price for the item, return it
-            if (!isNullOrUndefined(this.basketItem.updatedBasePrice)) 
+            if (!isNullOrUndefined(this.basketItem.updatedBasePrice))
             {
                 return this.basketItem.updatedBasePrice;
             }

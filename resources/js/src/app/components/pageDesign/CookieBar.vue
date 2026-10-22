@@ -1,7 +1,7 @@
 <template>
     <!-- v-show is required to prevent CLS for ssr -->
     <div
-        v-show="!$ceres.isSSR"   
+        v-show="!$ceres.isSSR"
         class="cookie-bar"
         :class="{
             'out': !isVisible,
@@ -23,8 +23,8 @@
                                 <input type="checkbox"
                                        class="custom-control-input"
                                        :id="_cid + '-group-' + consentGroup.key"
-                                       :disabled="consentGroup.necessary"
-                                       :checked="isConsented(consentGroup.key) || consentGroup.necessary"
+                                       :disabled="consentGroup.necessary || necessaryOnly(consentGroup)"
+                                       :checked="isConsented(consentGroup.key) || consentGroup.necessary || necessaryOnly(consentGroup)"
                                        @change="toggleConsent(consentGroup.key)">
                                 <label class="custom-control-label" :for="_cid + '-group-' + consentGroup.key">
                                     <template v-if="consentGroup.label.length > 0">
@@ -36,7 +36,7 @@
                                 </label>
                             </span>
                         </template>
-                        
+
                         <a href="#" class="text-primary text-appearance d-block d-md-inline-block" data-testing="cookie-bar-show-more-information" @click.prevent.stop="isExpanded=true">{{ $translate("Ceres::Template.cookieBarMoreSettings") }}</a>
                     </div>
 
@@ -104,13 +104,13 @@
                             </button>
                         </div>
                     </div>
-                </div>  
+                </div>
             </div>
         </div>
 
         <div v-else>
             <button class="btn btn-primary btn-appearance" @click.prevent.stop="isCollapsed = false" :aria-label="$translate('Ceres::Template.cookieBarPrivacySettings')">
-                <i class="fa fa-shield float-none"></i>
+                <i class="fa fa-shield float-none" aria-hidden="true"></i>
                 <span class="d-none d-sm-inline-block">{{ $translate("Ceres::Template.cookieBarPrivacySettings") }}</span>
             </button>
         </div>
@@ -130,7 +130,7 @@ export default {
         showRejectAll: {
             type: Boolean,
             default: true
-        },
+        }
     },
 
     mixins: [ComponentIdMixin], // Experimental mixin, may be removed in the future.
@@ -195,6 +195,11 @@ export default {
         toggleConsent(groupKey)
         {
             this.$store.commit("toggleConsent", groupKey + ".*");
+        },
+
+        necessaryOnly(obj)
+        {
+          return obj.key === 'media' && obj.consents.every(consent => consent.necessary === true)
         }
     }
 }

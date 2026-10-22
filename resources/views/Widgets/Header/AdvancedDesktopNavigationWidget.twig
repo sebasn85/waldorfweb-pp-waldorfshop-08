@@ -1,0 +1,68 @@
+{% import "Ceres::Widgets.Helper.TwigBuilder" as Twig %}
+{% import "Ceres::Widgets.Helper.WidgetHelper" as WidgetHelper %}
+
+{% set customClass = widget.settings.customClass.mobile %}
+{% set spacingSettings = widget.settings.spacing %}
+{% set inlineSpacings = WidgetHelper.getInlineSpacings(spacingSettings, spacingSettings.customPadding.mobile, spacingSettings.customMargin.mobile) %}
+{% set spacingClasses = WidgetHelper.getSpacingClasses(spacingSettings, spacingSettings.customPadding.mobile, spacingSettings.customMargin.mobile) %}
+
+{% set isFixed              = widget.settings.isFixed.mobile %}
+
+{% set companyLogoUrl = ceresConfig.header.companyLogo %}
+
+<div class="{% if isFixed %}sticky-top {% endif %}top-nav">
+    <nav class="navbar header-fw megamenu p-0{% if customClass | length > 0 %} {{ customClass }}{% endif %}">
+        <div class="container-max d-block{% if spacingClasses | length > 0 %} {{ spacingClasses }}{% endif %}"
+        {% if inlineSpacings | length > 0 %} style="{{ inlineSpacings }}"{% endif %}>
+            <div class="row mx-0 position-relative d-flex">
+{#                <div class="brand-wrapper px-lg-3 py-2 d-flex d-lg-none flex-grow-1">#}
+{#                    {% if companyLogoUrl | trim | length > 0 %}#}
+{#                    <a class="navbar-brand py-0 flex-grow-1" href="{{ Twig.print('urls.home') }}">#}
+{#                        <img#}
+{#                            src="{{ companyLogoUrl }}"#}
+{#                            alt="{{ Twig.print('trans("Ceres::Template.headerCompanyName")') }}"#}
+{#                            width="179"#}
+{#                            height="35">#}
+{#                    </a>#}
+{#                    {% endif %}#}
+{#                    <a href="{{ urls.wishList }}" class="d-flex w-100 h-100 p-0 justify-content-end" aria-label="{{ Twig.print('trans("Ceres::Template.wishList")') }}">#}
+{#                        <img class="d-block" src="https://cdn02.plentymarkets.com/rm2ukznxe8l9/frontend/Layout/icons2023/ws_icon_merkzettel.svg">#}
+{#                    </a>#}
+{#                    <a v-toggle-basket-preview href="#" class="d-flex w-100 h-100 p-0 justify-content-end">#}
+{#                        <img class="d-block" src="https://cdn02.plentymarkets.com/rm2ukznxe8l9/frontend/Layout/icons2023/ws_icon_warenkorb.svg">#}
+{#                    </a>#}
+{#                </div>#}
+
+                <div class="main-navbar-collapsable d-none d-lg-block">
+                    <ul class="mainmenu p-0 m-0 d-flex justify-content-between text-center">
+                        {% if config("Waldorfshop7.enableAllNavigation") == "true" %}
+                            <li class="bg-transparent">
+                                <a class="p-0" v-open-mobile-navigation role="button" type="button">
+                                    <img src="https://cdn02.plentymarkets.com/rm2ukznxe8l9/frontend/Layout/icons2023/ws_icon_burger_rot.svg" style="height: 35px;">
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% for entry in listEntries %}
+                            {% if entry.title is not empty %}
+                                {{ WidgetHelper.setUrlVariable('url', entry.url.value, entry.url.type) }}
+
+                                {%  if entry.megamenu is not empty %}
+                                    <li class="ddown flex-fill" v-navigation-touch-handler>
+                                        <a {{ Twig.if("url | trim is not empty") }} href="{{ Twig.print("url") }}"{{ Twig.endif() }} title="{{ entry.title }}">{{ entry.title }}</a>
+                                        <advanced-desktop-navigation :category-id="{{ entry.megamenu }}"></advanced-desktop-navigation>
+                                    </li>
+                                {% else %}
+                                    <li>
+                                        <a {{ Twig.if("url | trim is not empty") }} href="{{ Twig.print("url") }}"{{ Twig.endif() }} title="{{ entry.title }}">{{ entry.title }}</a>
+                                    </li>
+                                {% endif %}
+
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </nav>
+</div>

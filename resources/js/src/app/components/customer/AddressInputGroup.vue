@@ -104,7 +104,7 @@
 
             <div class="col-12" v-if="isParcelOrOfficeAvailable">
                 <div class="row">
-                    <div class="col-12">
+                    <div role="checkbox" :aria-label="$translate('Ceres::Template.addressToPickupStation')" class="col-12">
                         <input type="checkbox" name="togglePickup" :checked="value.showPickupStation" @change="togglePickupStation($event.target.checked)" :id="'showPickup' + _uid">
                         <label :for="'showPickup' + _uid">{{ $translate("Ceres::Template.addressToPickupStation") }}</label>
                     </div>
@@ -193,8 +193,8 @@
                 <hr class="mt-0">
                 <div class="row">
                     <div class="col-12" v-if="isInOptionalFields('de', 'delivery_address.email')">
-                        <div class="input-unit" data-model="email" v-validate:text="isInRequiredFields('de', 'delivery_address.email')">
-                            <input type="mail" name="email" :id="'email' + _uid" :value="value.email" @input="emitInputEvent('email', $event.target.value)" data-testing="packing-station-de-email-input">
+                        <div class="input-unit" data-model="email" v-validate:mail="isInOptionalFields('de', 'delivery_address.email')">
+                            <input type="email" name="email" :id="'email' + _uid" :value="value.email" @input="emitInputEvent('email', $event.target.value)" data-testing="packing-station-de-email-input">
                             <label :for="'email' + _uid">{{ transformTranslation("Ceres::Template.addressMail", "de", "delivery_address.email") }}</label>
                         </div>
                     </div>
@@ -398,8 +398,8 @@
                 <hr class="mt-0">
                 <div class="row">
                     <div class="col-12" v-if="isInOptionalFields('de', 'billing_address.email')">
-                        <div class="input-unit" data-model="email" v-validate:text="isInRequiredFields('de', 'billing_address.email')">
-                            <input type="mail" name="email" :id="'email' + _uid" :value="value.email" @input="emitInputEvent('email', $event.target.value)" data-testing="billing-address-de-email-input">
+                        <div class="input-unit" data-model="email" v-validate:mail="isInOptionalFields('de', 'billing_address.email')">
+                            <input type="email" name="email" :id="'email' + _uid" :value="value.email" @input="emitInputEvent('email', $event.target.value)" data-testing="billing-address-de-email-input">
                             <label :for="'email' + _uid">{{ transformTranslation("Ceres::Template.addressMail", "de", "billing_address.email") }}</label>
                         </div>
                     </div>
@@ -613,8 +613,8 @@
                 <hr class="mt-0">
                 <div class="row">
                     <div class="col-12" v-if="isInOptionalFields('gb', 'billing_address.email')">
-                        <div class="input-unit" data-model="email" v-validate:text="isInRequiredFields('gb', 'billing_address.email')">
-                            <input type="mail" name="email" :id="'email' + _uid" :value="value.email" @input="emitInputEvent('email', $event.target.value)" data-testing="billing-address-gb-email-input">
+                        <div class="input-unit" data-model="email" v-validate:mail="isInOptionalFields('gb', 'billing_address.email')">
+                            <input type="email" name="email" :id="'email' + _uid" :value="value.email" @input="emitInputEvent('email', $event.target.value)" data-testing="billing-address-gb-email-input">
                             <label :for="'email' + _uid">{{ transformTranslation("Ceres::Template.addressMail", "gb", "billing_address.email") }}</label>
                         </div>
                     </div>
@@ -728,7 +728,7 @@
 
             <div class="col-12" v-if="isParcelOrOfficeAvailable">
                 <div class="row">
-                    <div class="col-12">
+                    <div role="checkbox" :aria-label="$translate('Ceres::Template.addressToPickupStation')" class="col-12">
                         <input type="checkbox" name="togglePickup" :checked="value.showPickupStation" @change="togglePickupStation($event.target.checked)" :id="'showPickup' + _uid">
                         <label :for="'showPickup' + _uid">{{ $translate("Ceres::Template.addressToPickupStation") }}</label>
                     </div>
@@ -816,8 +816,8 @@
                 <hr class="mt-0">
                 <div class="row">
                     <div class="col-12" v-if="isInOptionalFields('de', 'delivery_address.email')">
-                        <div class="input-unit" data-model="email" v-validate:text="isInRequiredFields('de', 'delivery_address.email')">
-                            <input type="mail" name="email" :id="'email' + _uid" :value="value.email" @input="emitInputEvent('email', $event.target.value)" data-testing="delivery-address-de-email-input">
+                        <div class="input-unit" data-model="email" v-validate:mail="isInOptionalFields('de', 'delivery_address.email')">
+                            <input type="email" name="email" :id="'email' + _uid" :value="value.email" @input="emitInputEvent('email', $event.target.value)" data-testing="delivery-address-de-email-input">
                             <label :for="'email' + _uid">{{ transformTranslation("Ceres::Template.addressMail", "de", "delivery_address.email") }}</label>
                         </div>
                     </div>
@@ -1013,8 +1013,8 @@
                 <hr class="mt-0">
                 <div class="row">
                     <div class="col-12" v-if="isInOptionalFields('gb', 'delivery_address.email')">
-                        <div class="input-unit" data-model="email" v-validate:text="isInRequiredFields('gb', 'delivery_address.email')">
-                            <input type="mail" name="email" :id="'email' + _uid" :value="value.email" @input="emitInputEvent('email', $event.target.value)" data-testing="delivery-address-gb-email-input">
+                        <div class="input-unit" data-model="email" v-validate:mail="isInOptionalFields('gb', 'delivery_address.email')">
+                            <input type="email" name="email" :id="'email' + _uid" :value="value.email" @input="emitInputEvent('email', $event.target.value)" data-testing="delivery-address-gb-email-input">
                             <label :for="'email' + _uid">{{ transformTranslation("Ceres::Template.addressMail", "gb", "delivery_address.email") }}</label>
                         </div>
                     </div>

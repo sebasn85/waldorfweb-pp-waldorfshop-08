@@ -1,19 +1,19 @@
 <template>
-    <div class="container-max" :class="{'p-0' : $ceres.isShopBuilder}"> 
+    <div class="container-max" :class="{'p-0' : $ceres.isShopBuilder}">
         <div class="position-relative">
-            <div class="d-flex flex-grow-1 position-relative my-2">
+            <div class="d-flex flex-grow-1 position-relative">
                 <input type="search" class="search-input flex-grow-1 px-3 py-2" ref="searchInput" v-model="searchString" @input="onValueChanged($event.target.value)"
                     @keyup.enter="search()" @focus="isSearchFocused = true" @blur="onBlurSearchField($event)" :autofocus="isShopBuilder" :placeholder="$translate('Ceres::Template.headerSearchPlaceholder')" :aria-label="$translate('Ceres::Template.headerSearchTerm')">
 
                 <slot name="search-button">
-                    <button class="search-submit px-3" type="submit" @click="search()" :aria-label="$translate('Ceres::Template.headerSearch')">
-                        <icon class="fa-fw" icon="search" :loading="autocompleteIsLoading"></icon>
+                    <button class="search-submit bg-white" type="submit" @click="search()" :aria-label="$translate('Ceres::Template.headerSearch')">
+                        <img src="https://cdn02.plentymarkets.com/rm2ukznxe8l9/frontend/Layout/icons2023/ws_icon_suche.svg" :alt="$translate('Ceres::Template.headerSearch')" style="height: 30px;">
                     </button>
                 </slot>
             </div>
 
             <template v-if="isSearchFocused">
-                <div v-show="(searchString.length >= searchMinLength && hasInitialInput) || $ceres.isShopBuilder">
+                <div v-show="hasInitialInput || $ceres.isShopBuilder">
                     <slot name="autocomplete-suggestions">
                         <div class="autocomplete-suggestions shadow bg-white w-100">
                             <search-suggestion-item

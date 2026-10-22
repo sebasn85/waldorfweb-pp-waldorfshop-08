@@ -232,6 +232,11 @@ const actions =
                 {
                     option.value = dayjs(option.value * 1000).format("YYYY-MM-DD");
                 }
+
+                if (!address.gender)
+                {
+                    address.gender = "notToSay";
+                }
             });
 
             commit("setBillingAddressList", addressList);
@@ -246,6 +251,14 @@ const actions =
             {
                 id = -99;
             }
+
+            addressList.forEach(address =>
+            {
+                if (!address.gender)
+                {
+                    address.gender = "notToSay";
+                }
+            });
 
             commit("setDeliveryAddressList", addressList);
             commit("selectDeliveryAddress", addressList.find(address => address.id === id));
@@ -387,6 +400,8 @@ const actions =
                                 address.id = response.events.CheckoutChanged.checkout.billingAddressId;
                                 commit("addBillingAddress", { billingAddress: address });
                             }
+
+                            commit("updateBillingAddress", address);
                         }
                         else if (addressType === "2")
                         {

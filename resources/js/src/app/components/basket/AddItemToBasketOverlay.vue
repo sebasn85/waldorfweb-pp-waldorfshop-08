@@ -1,12 +1,12 @@
 <template>
     <div id="add-item-to-basket-overlay">
-        <div class="modal fade">
-            <div class="modal-dialog" role="document">
+        <div class="modal fade" role="dialog" aria-labelledby="modal-title" aria-modal="true">
+            <div class="modal-dialog">
                 <div class="modal-content" v-if="basketItem">
 
                     <!-- MODAL HEADER -->
                     <div class="modal-header">
-                        <div class="modal-title h5">{{ $translate("Ceres::Template.singleItemAdded") }}</div>
+                        <div id="modal-title" class="modal-title h5">{{ $translate("Ceres::Template.singleItemAdded") }}</div>
                         <span class="text-muted ml-auto"><span class="timer"></span>s</span>
                         <button type="button" class="close ml-0 pl-1" data-dismiss="modal" :aria-label="$translate('Ceres::Template.closeIcon')">
                             <span aria-hidden="true">&times;</span>
@@ -18,7 +18,12 @@
                     <div class="modal-body">
                         <div class="row is-table-row">
                             <div class="col-md-4" style="min-height: 80px;">
-                                <img style="max-height: 140px;" class="img-fluid mx-auto" :src="imageUrl" :alt="imageAlternativeText || itemName" :title="itemName"/>
+                                <lazy-img
+                                    :image-url="imageUrl"
+                                    :alt="imageAlternativeText || itemName"
+                                    :title="itemName"
+                                    :style="{ maxHeight: '140px' }"
+                                    picture-class="img-fluid mx-auto" />
                             </div>
                             <div class="col-md-8">
                                 <p>
@@ -83,7 +88,7 @@ export default {
     components: {
         OrderPropertyValueList
     },
-    
+
     props: {
         defaultTimeToClose: {
             type: Number,

@@ -12,7 +12,7 @@
 <div class="footer d-print-none footer-test">
 
     <div class="btn text-center border mx-auto rounded-lg p-0{% if topButtonPosition == "right" %} back-to-top btn-secondary pt-1{% else %} back-to-top-center{% endif %}">
-        <i class="fa fa-chevron-up fa-2x default-float"></i>
+        <i class="fa fa-chevron-up fa-2x default-float" aria-hidden="true"></i>
     </div>
 
     <div class="btn btn-secondary d-block d-md-none text-center p-2" v-scroll-to-top>
@@ -141,16 +141,5 @@
             </div>
         </div>
     </div>
-    <div class="dia-footer__copyright test">
-        <div class="container-max">
-            <div class="row">
-                <div class="dia-footer__copyright--price col-12 col-md-6 test">
-                    *Alle Preise inkl. der gesetzl. MwSt zzgl. Versand
-                </div>
-                <!--<div class="dia-footer__copyright--brand col-12 col-md-6 test2">
-                    &copy; Copyright {{ "now" | date("Y") }} {{ trans("Ceres::Template.footerAllRightsReserved") }} |<a class="oneodt__link" href="https://one-dot.de/" title="ONEDOT Homepage" target="_blank"> webshop by </a>
-                </div>-->
-            </div>
-        </div>
-    </div>
+
 {% endif %}

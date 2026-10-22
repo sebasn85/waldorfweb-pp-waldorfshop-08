@@ -7,74 +7,33 @@
 <meta name="format-detection" content="telephone=no"> {# avoid DOM manipulation by Safari #}
 
 {% set defaultFavicon = '/tpl/favicon_' ~ webstoreConfig.webstoreId ~ '.ico' %}
-<link rel="icon" type="img/ico" href="{{ webstoreConfig.faviconPath | default(ceresConfig.global.favicon) | default(defaultFavicon) }}">
+<link rel="icon" type="image/x-icon" href="{{ webstoreConfig.faviconPath | default(ceresConfig.global.favicon) | default(defaultFavicon) }}">
+
 
 {% set canonicalUrl = services.url.getCanonicalURL() %}
 {% set languageUrls = services.url.getLanguageURLs() %}
 
-{% if canonicalUrl is not null %}
-    <link rel="canonical" href="{{ canonicalUrl  ~ services.url.getCanonicalQueryString() }}">
+{% if forcedCanonicalUrl is defined and forcedCanonicalUrl is not empty %}
+    <link rel="canonical" href="{{ forcedCanonicalUrl }}">
+{% else %}
+    {% if canonicalUrl is not null %}
+        <link rel="canonical" href="{{ canonicalUrl  ~ services.url.getCanonicalQueryString() }}">
+    {% endif %}
 {% endif %}
 
-{% if services.url.isCanonical() or request.get('env') == "testing" %}
+{# old: {% if services.url.isCanonical() or request.get('env') == "testing" %} #}
+{% if languageUrls is not empty or request.get('env') == "testing" %}
     {% for language, url in languageUrls %}
         <link rel="alternate" hreflang="{{language}}" href="{{url}}"/>
     {% endfor %}
 {% endif %}
 
-<style data-font="Custom-Font">
-    {% set customFont =
-        {
-            regular: config('Ceres.custom-font-regular'),
-            bold: config('Ceres.custom-font-bold'),
-            italic: config('Ceres.custom-font-italic'),
-            boldItalic: config('Ceres.custom-font-bold-italic')
-        }
-    %}
+{% set minSuffix = '.min' %}
+{% if ceresConfig.log.performanceLevel  == 'development' %}
+    {% set minSuffix = '' %}
+{% endif %}
 
-    {% if customFont.regular %}
-    {{ add_asset(customFont.regular, 'font', 'preload', {'crossorigin': true}) }}
-    @font-face {
-        font-family: "Custom-Font";
-        src: url("{{ customFont.regular }}");
-        font-display: swap;
-    }
-    {% endif %}
-    {% if customFont.bold %}
-    {{ add_asset(customFont.bold, 'font', 'preload', {'crossorigin': true}) }}
-    @font-face {
-        font-family: "Custom-Font";
-        src: url("{{ customFont.bold }}");
-        font-display: swap;
-        font-weight: bold;
-    }
-    {% endif %}
-    {% if customFont.italic %}
-    {{ add_asset(customFont.italic, 'font') }}
-    {{ add_asset(customFont.italic, 'font', 'preload', {'crossorigin': true}) }}
-    @font-face {
-        font-family: "Custom-Font";
-        src: url("{{ customFont.italic }}");
-        font-display: swap;
-        font-style: italic;
-    }
-    {% endif %}
-    {% if customFont.boldItalic %}
-    {{ add_asset(customFont.boldItalic, 'font', 'preload', {'crossorigin': true}) }}
-    @font-face {
-        font-family: "Custom-Font";
-        src: url("{{ customFont.boldItalic }}");
-        font-display: swap;
-        font-weight: bold;
-        font-style: italic;
-    }
-    {% endif %}
-
-</style>
-
-{% set iconCSS = plugin_path("Waldorfshop7") ~ "/css/dia/ceres-icons.css" %}
-
-{% set defaultCSS = plugin_path("Waldorfshop7") ~ "/css/dia/" ~ assetName ~ ".css?v=" ~ buildHash %}
+{% set defaultCSS = plugin_path("Waldorfshop7") ~ "/css/dia/" ~ assetName ~ minSuffix ~ ".css?v=" ~ buildHash %}
 {% set defaultSCSS = plugin_path("Waldorfshop7") ~ "/css/dia/" ~ assetName ~ ".scss?v=" ~ buildHash %}
 
 <link rel="preload" as="style" href="{{ defaultCSS }}">
@@ -86,9 +45,17 @@
     <link rel="stylesheet" href="{{ plugin_path("Waldorfshop7") }}/css/dia/ceres-shopbuilder.css?v={{ buildHash }}">
 {% endif %}
 
+<link rel="preload" as="image" href="{{ ceresConfig.header.companyLogo }}">
+
 {{ LayoutContainer.show("Ceres::Template.StyleOverwrite") }}
 
 <!-- Extend the existing style with a template -->
 {{ LayoutContainer.show("Ceres::Template.Style") }}
 
+{% if services.template.isItem() == "1"%}
+    <link rel="stylesheet" href="{{ plugin_path('Waldorfshop7') }}/css/dia/photoswipe.css">
+{% endif %}
+
 {{ get_shop_builder_styles() }}
+
+<link rel="stylesheet" href="{{ plugin_path('Waldorfshop7') }}/css/waldorf-guarantees.css?v={{ buildHash }}">

@@ -24,7 +24,7 @@ Vue.use(script2);
 import "./app/jQuery";
 
 import "bootstrap";
-import "owl.carousel";
+// import "owl.carousel";
 
 import { getUrlParams } from "./app/services/UrlService";
 window.ceresEnv = getUrlParams()["env"];
@@ -68,11 +68,15 @@ Vue.component("user-login-handler", UserLoginHandler);
 Vue.component("form-attachment", () => import("./app/components/form/FormAttachment.vue"));
 
 Vue.component("item-bundle", () => import("./app/components/item/ItemBundle.vue"));
+Vue.component("guarantee-badge", () => import("./app/components/item/GuaranteeBadge.vue"));
+Vue.component("guarantee-label-full", () => import("./app/components/item/GuaranteeLabelFull.vue"));
+Vue.component("guarantee-label-widget", () => import("./app/components/item/GuaranteeLabelWidget.vue"));
 Vue.component("quantity-input", () => import("./app/components/item/QuantityInput.vue"));
 
 Vue.component("tag-list", () => import("./app/components/item/TagList.vue"));
 
 Vue.component("category-item", () => import("./app/components/itemList/CategoryItem.vue"));
+Vue.component("list-item", () => import("./app/components/itemList/ListItem.vue"));
 import ItemSearch from "./app/components/itemList/ItemSearch.vue";
 Vue.component("item-search", ItemSearch);
 Vue.component("search-suggestion-item", () => import("./app/components/itemList/SearchSuggestionItem.vue"));
@@ -88,11 +92,15 @@ Vue.component("order-return", () => import("./app/components/orderReturn/OrderRe
 
 Vue.component("cookie-bar", () => import("./app/components/pageDesign/CookieBar.vue"));
 Vue.component("privacy-settings", () => import("./app/components/pageDesign/PrivacySettings.vue"));
-Vue.component("carousel", () => import("./app/components/pageDesign/Carousel.vue"));
+// Vue.component("carousel", () => import("./app/components/pageDesign/Carousel.vue"));
 import Icon from "./app/components/pageDesign/Icon.vue";
 Vue.component("icon", Icon);
 import LanguageDetection from "./app/components/pageDesign/LanguageDetection.vue";
 Vue.component("language-detection", LanguageDetection);
+import AdvancedDesktopNavigation from "./app/components/pageDesign/AdvancedDesktopNavigation.vue";
+Vue.component("advanced-desktop-navigation", AdvancedDesktopNavigation);
+import DesktopNavigation from "./app/components/pageDesign/DesktopNavigation.vue";
+Vue.component("desktop-navigation", DesktopNavigation);
 import MobileNavigation from "./app/components/pageDesign/MobileNavigation.vue";
 Vue.component("mobile-navigation", MobileNavigation);
 import Notifications from "./app/components/pageDesign/Notifications.vue";
@@ -118,6 +126,11 @@ Vue.component("order-property-list", () => import("./app/components/item/OrderPr
 Vue.component("variation-select", () => import("./app/components/item/VariationSelect.vue"));
 Vue.component("item-availability", () => import("./app/components/item/ItemAvailability.vue"));
 Vue.component("single-item-bundle", () => import("./app/components/item/SingleItemBundle.vue"));
+Vue.component("item-manufacturer", () => import("./app/components/item/ItemManufacturer.vue"));
+Vue.component("item-manufacturer-data-list", () => import("./app/components/item/ItemManufacturerDataList.vue"));
+Vue.component("item-eu-responsible-data-list", () => import("./app/components/item/ItemEuResponsibleDataList.vue"));
+Vue.component("manufacturer-details", () => import("./app/components/item/ManufacturerDetails.vue"));
+Vue.component("eu-responsible-details", () => import("./app/components/item/EuResponsibleDetails.vue"));
 Vue.component("single-add-to-basket", () => import("./app/components/item/SingleAddToBasket.vue"));
 Vue.component("set-quantity-input", () => import("./app/components/item/SetQuantityInput.vue"));
 import SingleItem from "./app/components/item/SingleItem.vue";
@@ -177,6 +190,8 @@ import "./app/filters/inputUnit.filter";
 import "./app/filters/itemBundleName.filter";
 import "./app/filters/itemCrossPrice.filter";
 import "./app/filters/itemImage.filter";
+import "./app/filters/itemImageHeight.filter";
+import "./app/filters/itemImageWidth.filter";
 import "./app/filters/itemImageAlternativeText.filter";
 import "./app/filters/itemImages.filter";
 import "./app/filters/itemName.filter";

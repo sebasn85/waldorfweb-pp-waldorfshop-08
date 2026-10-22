@@ -37,10 +37,18 @@
     {% endif %}
     {% if isItem %}
         {{ LayoutContainer.show("Ceres::SingleItem.Styles") }}
-    {% endif %}
+    {% endif %} 
 </head>
 
-<body class="{{ bodyClasses | join(' ') }} {% if request.get('openBasketPreview') == 1 %} basket-open{% endif %}">
+{% set listCategoryList = config('Waldorfshop7.config.ListCategory') | replace({' ': ''}) | split(',') %}
+{% set currentCatID = "" %}
+{% if services.template.isCategory() == "1" %}
+    {% set currentCat = services.category.getCurrentCategory() %}
+    {% set currentCatID = currentCat.id ~ "" %}
+{% endif %}
+{% set isListCategory = currentCatID is not empty and currentCatID in listCategoryList %}
+
+<body class="{{ bodyClasses | join(' ') }} {% if request.get('openBasketPreview') == 1 %} basket-open{% endif %} {% if isListCategory %} listCategory listCategoryActive{% endif %} {% if isShopBuilder %} isShopbuilder{% endif %}">
 
 {{ LayoutContainer.show("Ceres::PageDesign.AfterOpeningBodyTag") }}
 
@@ -75,12 +83,12 @@
 
     <!-- LOGIN MODAL -->
     <div id="login-modal-wrapper">
-        <div class="modal fade login-modal" id="login" tabindex="-1" role="dialog">
+        <div class="modal fade login-modal" id="login" tabindex="-1" role="dialog" aria-labelledby="modal-title" aria-modal="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <div class="modal-title h3">{{ trans("Ceres::Template.login") }}</div>
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" aria-label="{{ trans("Ceres::Template.closeIcon") }}">&times;</button>
+                        <div id="modal-title" class="modal-title h3">{{ trans("Ceres::Template.login") }}</div>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="{{ trans("Ceres::Template.closeIcon") }}">&times;</button>
                     </div>
                     <lazy-load component="login-modal">
                         <login modal-element="login-modal-wrapper">
@@ -97,20 +105,19 @@
 
     <!-- REGISTRATION MODAL -->
     <div id="simple-registration-modal-wrapper">
-        <div class="modal fade" id="registration" tabindex="-1" role="dialog">
+        <div class="modal fade" id="registration" tabindex="-1" role="dialog" aria-labelledby="modal-title" aria-modal="true">
             <div class="modal-dialog">
                 <lazy-load component="register-modal">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <div class="modal-title h3">
+                            <div id="modal-title" class="modal-title h3">
                                 {{ trans("Ceres::Template.regCreateAccount") }}
-
                             </div>
 
                             <popper v-cloak class="ml-auto">
                                 <template #handle>
-                                    <button class="btn btn-icon btn-secondary btn-sm">
-                                        <i class="fa fa-info"></i>
+                                    <button class="btn btn-icon btn-secondary btn-sm" aria-label="{{ trans("Ceres::Widget.additionalInformationLabel") }}">
+                                        <i class="fa fa-info" aria-hidden="true"></i>
                                     </button>
                                 </template>
                                 <template #title>
@@ -126,7 +133,7 @@
                                 </template>
                             </popper>
 
-                            <button type="button" class="close ml-0" data-dismiss="modal" aria-hidden="true" aria-label="{{ trans("Ceres::Template.closeIcon") }}">&times;</button>
+                            <button type="button" class="close ml-0" data-dismiss="modal" aria-label="{{ trans("Ceres::Template.closeIcon") }}">&times;</button>
                         </div>
                         <div class="modal-body">
                             <registration :is-simple-registration="true" modal-element="simple-registration-modal-wrapper">
@@ -168,21 +175,14 @@
     <!-- SHIPPINGCOSTS MODAL -->
     {% if ceresConfig.global.shippingCostsCategoryId > 0 %}
         <div id="shippingscosts-modal-wrapper">
-            <div class="modal fade" id="shippingscosts" tabindex="-1" role="dialog">
+            <div class="modal fade" id="shippingscosts" tabindex="-1" role="dialog" aria-labelledby="modal-title" aria-modal="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <div class="modal-title h3">{{ trans('Ceres::Template.shippingInfoCosts') }}</div>
+                            <div id="modal-title" class="modal-title h3">{{ trans('Ceres::Template.shippingInfoCosts') }}</div>
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true" aria-label="{{ trans("Ceres::Template.closeIcon") }}">&times;</button>
                         </div>
-                        <div class="modal-body">
-                            {% set shopBuilderShippingTemplate = shop_builder_category_template(ceresConfig.global.shippingCostsCategoryId) %}
-                            {% if shopBuilderShippingTemplate | trim is not empty %}
-                                {{ shopBuilderShippingTemplate | raw }}
-                            {% else %}
-                                {% include category_template(ceresConfig.global.shippingCostsCategoryId, lang, webstoreConfig.webstoreId) ignore missing %}
-                            {% endif %}
-                        </div>
+                        <div class="modal-body"></div>
                     </div>
                 </div>
             </div>
@@ -220,12 +220,16 @@
         "isCheapestSorting": "{{ services.template.isCheapestSorting() }}",
         "useVariationOrderProperties": {% if webstoreConfig.useVariationOrderProperties | default(0) %}true{% else %}false{% endif %},
         "initialData": {
+            {% if (assetName == 'ceres-checkout' or services.template.isRegister()) and services.country.hasEUShippingCountry() %}
+               "euShippingCountries": {{ services.country.getEUCountriesList() | json_encode | raw }},
+            {% endif %}
             "shippingCountries": {{ services.country.getActiveCountriesList() | filterFields(["id", "currLangName", "isoCode2", "states.id", "states.name", "vatCodes"]) | json_encode | raw }},
             "shippingCountryId": {{ services.checkout.getShippingCountryId() }},
             "showNetPrices": {{ showNetPrices | json_encode }}
         },
         "features": {},
-        "languageMap": {{ webstoreConfig.browserLanguage | json_encode | raw }}
+        "languageMap": {{ webstoreConfig.browserLanguage | json_encode | raw }},
+        "shippingscostsLoaded": false
     }
 </script>
 <!-- /SSR -->
@@ -258,7 +262,22 @@
 <script src="{{ plugin_path('Waldorfshop7') }}/js/dist/{{ assetName }}{{ minSuffix }}.js?v={{ buildHash }}"></script>
 <!-- /SSR -->
 
-<script src="{{ plugin_path('Waldorfshop7') }}/js/dist/wd_custom.js"></script>
+{#<script src="{{ plugin_path('Waldorfshop7') }}/js/dist/wd_custom.js"></script>#}
+{#{% if assetName == 'ceres-checkout' %}#}
+{#    <script async src="https://cdn.novalnet.de/js/v2/NovalnetUtility.min.js"></script>#}
+{#{% endif %}#}
+
+{% if isItem %} 
+   <script type="module">
+        import PhotoSwipeLightbox from '{{ plugin_path('Waldorfshop7') }}/js/dist/photoswipe-lightbox.esm.js';
+        const lightbox = new PhotoSwipeLightbox({
+        gallery: '#itemgallery',
+        children: 'a',
+        pswpModule: () => import('{{ plugin_path('Waldorfshop7') }}/js/dist/photoswipe.esm.js')
+        });
+        lightbox.init();
+    </script>
+{% endif %}
 
 {% for scriptTemplate in get_additional_scripts() %}
     {% include scriptTemplate.path ignore missing with scriptTemplate.params %}
@@ -322,6 +341,78 @@
 
 {% if not services.template.shouldBeCached() %}
     <input type="hidden" id="csrf-token" value="{{ csrf_token() }}">
+{% endif %}
+
+{% if isItem %}
+    <script>
+        (function () {
+            var widget = document.querySelector('.single .widget-add-to-basket');
+
+            if (!widget || !widget.parentNode) {
+                return;
+            }
+
+            
+            var anchor = document.createElement('div');
+            anchor.setAttribute('aria-hidden', 'true');
+            widget.parentNode.insertBefore(anchor, widget);
+
+            var mobile = window.matchMedia('(max-width: 767.98px)');
+            var barHeight = 0;
+            var scheduled = false;
+
+            function update() {
+                scheduled = false;
+
+                if (!mobile.matches) {
+                    widget.classList.add('is-released');
+                    return;
+                }
+
+               
+                if (!widget.classList.contains('is-released')) {
+                    barHeight = widget.offsetHeight;
+                }
+
+                var naturalTop = anchor.getBoundingClientRect().bottom;
+
+                widget.classList.toggle('is-released', naturalTop <= window.innerHeight - barHeight);
+            }
+
+            function schedule() {
+                if (scheduled) {
+                    return;
+                }
+
+                scheduled = true;
+                window.requestAnimationFrame(update);
+            }
+
+            window.addEventListener('scroll', schedule, { passive: true });
+            window.addEventListener('resize', schedule);
+            window.addEventListener('orientationchange', schedule);
+            window.addEventListener('load', schedule);
+
+            
+            if (window.ResizeObserver) {
+                new ResizeObserver(schedule).observe(document.body);
+            }
+
+            if (mobile.addEventListener) {
+                mobile.addEventListener('change', schedule);
+            } else if (mobile.addListener) {
+                mobile.addListener(schedule);
+            }
+
+            update();
+
+            window.requestAnimationFrame(function () {
+                window.requestAnimationFrame(function () {
+                    widget.classList.add('is-ready');
+                });
+            });
+        })();
+    </script>
 {% endif %}
 
 </body>

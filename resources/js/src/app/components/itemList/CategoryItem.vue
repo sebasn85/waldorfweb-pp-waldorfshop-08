@@ -22,11 +22,10 @@
             </add-to-basket>
 
             <div class="thumb-image">
-                <div class="prop-1-1">
+                <div class="prop-1-1 cimage">
                     <slot name="item-image">
                         <category-image-carousel :image-urls-data="item.images | itemImages(imageUrlAccessor)"
                                                 :alt="item | itemName"
-                                                :title="item | itemName"
                                                 :item-url="item | itemURL(urlWithVariationId)"
                                                 :enable-carousel="$ceres.config.item.enableImageCarousel"
                                                 :disable-carousel-on-mobile="disableCarouselOnMobile"
